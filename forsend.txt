@@ -1,0 +1,21 @@
+Sub processofilaenvio()
+
+
+
+    x = Range("CONTAGEM").Value
+    
+    For i = 1 To x
+    
+    Application.Ontime Now + TimeValue("00:00:01"), "final"
+    
+    
+
+    
+    Next
+    
+    'MsgBox "Processo finalizado", vbInformation
+    
+    
+
+
+End Sub

@@ -1,0 +1,116 @@
+Sub final()
+
+Application.ScreenUpdating = True
+
+
+        'Configurar planilhas visíveis
+        Sheets("MS").Visible = True
+        Sheets("LISTA").Visible = True
+        Sheets("LISTA").Select
+        
+        
+        
+        
+        
+                    'Com a lista validada processo abaixo começa a configurar a "fila de envio"
+                    Range("B1").Select
+                    Selection.End(xlDown).Select
+                    Range("FILTRO").Value = ActiveCell.Value
+                    Range("MAIL").Value = ActiveCell.Offset(0, 1).Value
+                    Selection.Clear
+                
+                
+                
+                
+                            'Processo normal de envio da mensagem com representante filtrado no código acima
+                            Sheets("MS").Range("A1:XFD1048576").EntireRow.Delete
+                        
+                        
+                    
+                            Sheets("BASE").Select
+                            ActiveSheet.ListObjects("Tabela1").Range.AutoFilter Field:=8, Criteria1:= _
+                            Range("FILTRO").Value
+                            
+                            Range("C5").CurrentRegion.Select
+                            Selection.SpecialCells(xlCellTypeVisible).Select
+                            Selection.Copy
+                            'colar valores e formatacao
+                            Sheets("MS").Select
+                            Sheets("MS").Range("A1").PasteSpecial Paste:=xlPasteValues
+                            Sheets("MS").Range("A1").PasteSpecial Paste:=xlPasteFormats
+                        
+                            
+                            'Ajusta tamanhos de coluna e centraliza todo o conteúdo
+                            Cells.EntireColumn.AutoFit
+                            Range("A4:U1048576").HorizontalAlignment = xlCenter
+                            '______________________________________________________________________________________________________________________________________________
+                            
+                            
+                                                        
+                                                        'Condicional em caso de envio como teste por parte do usuário
+                                                        If Range("CONTROL").Value = True Then
+                                                                'Variável para seleção do que será enviado
+                                                                '_________________________________________
+                                                                r = Range("A1").CurrentRegion.Rows.Count + 0
+                                                                ActiveSheet.Range(Cells(1, 1), Cells(r, 21)).Select
+                                                               
+                                                                
+        
+                                                                ActiveWorkbook.EnvelopeVisible = True
+                                                                With ActiveSheet.MailEnvelope
+                                                                                   
+                                                                .Introduction = Range("MENSAGEM")
+                                                                .Item.to = Range("BACKUP")
+                                                                .Item.Subject = "Vendas"
+                                                                .Item.Send
+                                                                           
+                                                                End With
+                                                                
+                                                        'Condicional para envio em caso de envio normal (deveria ter inserido na frente).
+                                                        Else
+                                                                
+                                                                r = Range("A1").CurrentRegion.Rows.Count + 0
+                                                                ActiveSheet.Range(Cells(1, 1), Cells(r, 21)).Select
+                                                               
+                                                                
+        
+                                                                ActiveWorkbook.EnvelopeVisible = True
+                                                                With ActiveSheet.MailEnvelope
+                                                                                   
+                                                                .Introduction = Range("MENSAGEM")
+                                                                .Item.to = Range("MAIL")
+                                                                .Item.Subject = "Vendas"
+                                                                .Item.Send
+                                                                           
+                                                                End With
+                                                                
+                                                        End If
+                                                                                        
+                            '_________________________________________________________________________________________________________________________________________________
+                            'Confirmação de mensagem enviada para o representante específico
+                            'MsgBox "Mensagem enviada para " & Range("FILTRO").Value, vbInformation
+                            
+                            Range("MAIL").Value = ""
+                            Range("FILTRO").Value = ""
+                            Sheets("BASE").Select
+                            Range("C7").Select
+                            ActiveSheet.ShowAllData
+                            Application.CutCopyMode = False
+                            
+                            
+                            Sheets("LISTA").Select
+        
+        
+        
+        'Ocultar novamente guias que foram utilizadas no código
+        Sheets("MS").Visible = False
+        Sheets("LISTA").Visible = False
+        
+        
+        
+        
+    
+Application.ScreenUpdating = False
+
+End Sub
+

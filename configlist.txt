@@ -1,0 +1,72 @@
+Sub configuralista()
+
+Application.ScreenUpdating = False
+
+    'Enviar todos começa inevitavelmente com a validação da listagem de representantes
+    'Comandos para validar nova listagem de representantes sempre que o arquivo for atualizado com novo desempenho
+    'Configurar guias que devem ficar visíveis / ocultas
+    Sheets("LISTA").Visible = True
+    
+        If Range("BACKUP").Value = "" Then
+        
+                MsgBox "Favor preencher o endereço de e-mail de quem fará o envio dos reports !", vbCritical
+        
+        Else
+    
+    
+    
+                'Limpar base apoio com listagem antiga de representantes
+                Sheets("LISTA").Range("A6").CurrentRegion.Clear
+                
+    
+        
+                '_______________________________________________________
+                Sheets("BASE").Select
+                Range("I8:J8").Select
+                Range(Selection, Selection.End(xlDown)).Select
+                Selection.Copy Destination:=Sheets("LISTA").Range("A6")
+                
+                '_______________________________________________________
+                
+                Sheets("LISTA").Select
+                ActiveSheet.Range("$A$6:$B$1048576").RemoveDuplicates Columns:=Array(1, 2), _
+                Header:=xlNo
+                Range("CONTAGEM").FormulaR1C1 = "=COUNTA(RC[-3]:R[1048570]C[-3])"
+                
+                'Looping para inserção de fórmula procv
+                Range("C6").Select
+                m = Range("CONTAGEM").Value
+                
+                'localiza o email no cadastro do vendedor
+                'Caso o vendedor não esteja cadastrado pegar email da celula backup
+                For i = 1 To m
+            
+                    ActiveCell.FormulaR1C1 = "=IFERROR(VLOOKUP(RC[-2],CAD!C[-2]:C,3,FALSE),BACKUP)"
+                    ActiveCell.Offset(1, 0).Select
+                
+                Next
+                
+             
+             
+                'Gambiarra para desencadear a fila de envios
+  
+                
+                
+                
+          End If
+                
+                
+                
+                
+        Call processofilaenvio
+                
+                
+                
+    
+    'Ocultar novamente lista do usuário final
+
+Application.ScreenUpdating = True
+
+
+
+End Sub
